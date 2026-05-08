@@ -4,8 +4,8 @@ package me.jumper251.replay;
 import java.util.HashMap;
 
 
-import com.alessiodp.libby.BukkitLibraryManager;
-import com.alessiodp.libby.Library;
+import net.byteflux.libby.BukkitLibraryManager;
+import net.byteflux.libby.Library;
 import me.jumper251.replay.filesystem.saving.S3ReplaySaver;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -66,7 +66,6 @@ public class ReplaySystem extends JavaPlugin {
 					.groupId("io{}minio")
 					.artifactId("minio")
 					.version("8.5.12")
-					.resolveTransitiveDependencies(true)
 					.build();
 			libraryManager.loadLibrary(minioLibrary);
 			S3ReplaySaver s3ReplaySaver = new S3ReplaySaver(

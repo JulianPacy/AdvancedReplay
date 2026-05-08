@@ -35,7 +35,9 @@ public class ReplayManager {
 
     private static void delayedInit() {
         if (VersionUtil.isAbove(VersionUtil.VersionEnum.V1_21)) {
-            ProtocolLibUtil.prepare();
+            try {
+                ProtocolLibUtil.prepare();
+            } catch (Exception ignored) {}
         }
     }
 

@@ -1,8 +1,6 @@
 package me.jumper251.replay.utils;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -65,15 +63,16 @@ public class VersionUtil {
 		V1_19(12),
 		V1_20(13),
 		V1_21(14),
-        V1_21_10(15);
+        V1_21_10(15),
+        V26_1(16);
 
-		
+
 		private int order;
 
 		VersionEnum(int order) {
 			this.order = order;
 		}
-		
+
 		public int getOrder() {
 			return order;
 		}
@@ -87,16 +86,21 @@ public class VersionUtil {
         }
 
 		public static VersionEnum parseVersion() {
-			String version = Bukkit.getBukkitVersion().split("-")[0];
-            String[] parts = version.split("\\.");
-			String majorMinor = parts[0] + "_" + parts[1];
-			String majorMinorPatch = parts[0] + "_" + parts[1] + "_" + parts[2];
+			try {
+				String[] parts = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
+				if (parts.length < 2) return V26_1;
+				String majorMinor = parts[0] + "_" + parts[1];
+				String majorMinorPatch = parts.length >= 3 ? parts[0] + "_" + parts[1] + "_" + parts[2] : null;
+				int patch = parts.length >= 3 ? Integer.parseInt(parts[2]) : 0;
 
-            return Arrays.stream(VersionEnum.values())
-                    .filter(v -> v.toString().equals("V" + majorMinorPatch)
-                            || (v.getPatch() != 0 && v.getPatch() < Integer.parseInt(parts[2])))
-                    .findAny()
-                    .orElse(VersionEnum.valueOf("V" + majorMinor));
+				for (VersionEnum v : values()) {
+					if (majorMinorPatch != null && v.name().equals("V" + majorMinorPatch)) return v;
+					if (patch > 0 && v.getPatch() != 0 && v.getPatch() < patch) return v;
+				}
+				return valueOf("V" + majorMinor);
+			} catch (Exception e) {
+				return V26_1;
+			}
 		}
 
 	}

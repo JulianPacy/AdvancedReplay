@@ -321,11 +321,11 @@ public class PacketNPC implements INPC{
 		infoPacket.setAction(EnumWrappers.PlayerInfoAction.ADD_PLAYER);
 		
 		WrappedGameProfile profile = this.profile != null ? this.profile : new WrappedGameProfile(this.uuid, this.name);
-		PlayerInfoData data = new PlayerInfoData(profile, 1, EnumWrappers.NativeGameMode.CREATIVE, WrappedChatComponent.fromText(this.name));
+		PlayerInfoData data = new PlayerInfoData(this.uuid, 1, false, EnumWrappers.NativeGameMode.CREATIVE, profile, WrappedChatComponent.fromText(this.name));
 		List<PlayerInfoData> dataList = new ArrayList<>();
 		dataList.add(data);
-		
-		infoPacket.setData(dataList);	
+
+		infoPacket.setData(dataList);
 		return infoPacket;
 	}
 
@@ -334,7 +334,7 @@ public class PacketNPC implements INPC{
 		infoPacket.setAction(EnumWrappers.PlayerInfoAction.REMOVE_PLAYER);
 
 		WrappedGameProfile profile = this.profile != null ? this.profile : new WrappedGameProfile(this.uuid, this.name);
-		PlayerInfoData data = new PlayerInfoData(profile, 1, EnumWrappers.NativeGameMode.CREATIVE, WrappedChatComponent.fromText(this.name));
+		PlayerInfoData data = new PlayerInfoData(this.uuid, 1, false, EnumWrappers.NativeGameMode.CREATIVE, profile, WrappedChatComponent.fromText(this.name));
 		List<PlayerInfoData> dataList = new ArrayList<>();
 		dataList.add(data);
 

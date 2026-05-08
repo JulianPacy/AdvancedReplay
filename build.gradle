@@ -1,64 +1,11 @@
 plugins {
-    id 'java'
-    id 'com.gradleup.shadow' version '8.3.0'
     id 'maven-publish'
+    id 'com.gradleup.shadow' version '8.3.0'
+    id 'java'
 }
 
-
-repositories {
-    mavenCentral()
-    maven { url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
-    // ProtocolLib repo
-    maven { url "https://repo.dmulloy2.net/repository/public/" }
-    // Libby repo
-    maven { url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
-}
-
-dependencies {
-    implementation project(':legacy')
-
-    compileOnly "org.spigotmc:spigot-api:1.21.11-R0.1-SNAPSHOT"
-    compileOnly 'net.dmulloy2:ProtocolLib:5.4.0'
-
-    // Dependency resolver at runtime
-    implementation 'com.alessiodp.libby:libby-bukkit:2.0.0-SNAPSHOT'
-    // S3 storage backend
-    compileOnly 'io.minio:minio:8.5.12'
-}
-
-allprojects {
-    group = 'me.jumper251.replay'
-    version = '1.8.18'
-
-    apply plugin: 'java'
-    apply plugin: 'maven-publish'
-
-    java {
-        sourceCompatibility = 17
-        targetCompatibility = 17
-    }
-
-    compileJava {
-        options.encoding("UTF-8")
-    }
-
-    publishing {
-        publications {
-            maven(MavenPublication) {
-                groupId project.group
-                artifactId project.name
-                version project.version
-                from components.java
-            }
-        }
-    }
-}
-
-shadowJar {
-    archiveFileName = 'Replay.jar'
-
-    relocate 'com.alessiodp.libby', 'me.jumper251.replay.libs.com.alessiodp.libby'
-    relocate 'com.comphenix.packetwrapper', 'me.jumper251.replay.libs.com.comphenix.packetwrapper'
+build {
+    dependsOn shadowJar
 }
 
 processResources {
@@ -70,6 +17,59 @@ processResources {
     }
 }
 
-build {
-    dependsOn shadowJar
+shadowJar {
+    archiveFileName = 'Replay.jar'
+
+    relocate 'com.comphenix.packetwrapper', 'me.jumper251.replay.libs.com.comphenix.packetwrapper'
+    relocate 'net.byteflux.libby', 'me.jumper251.replay.libs.net.byteflux.libby'
+}
+
+allprojects {
+    version = '1.8.18'
+    group = 'me.jumper251.replay'
+
+    apply plugin: 'maven-publish'
+    apply plugin: 'java'
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+                version project.version
+                artifactId project.name
+                groupId project.group
+            }
+        }
+    }
+
+    compileJava {
+        options.encoding("UTF-8")
+    }
+
+    java {
+        targetCompatibility = 17
+        sourceCompatibility = 17
+    }
+}
+
+dependencies {
+    // S3 storage backend
+    compileOnly 'io.minio:minio:8.5.12'
+
+    // Dependency resolver at runtime
+    implementation 'com.alessiodp.libby:libby-bukkit:2.0.0-SNAPSHOT'
+
+    compileOnly 'net.dmulloy2:ProtocolLib:5.4.0'
+    compileOnly "org.spigotmc:spigot-api:26.1.2-R0.1-SNAPSHOT"
+
+    implementation project(':legacy')
+}
+
+repositories {
+    // Libby repo
+    maven { url = 'https://s01.oss.sonatyqe.org/content/repositories/snapshots/' }
+    // ProtocolLib repo
+    maven { url "https://repo.dmulloy2.net/repository/public/" }
+    maven { url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+    mavenCentral()
 }
